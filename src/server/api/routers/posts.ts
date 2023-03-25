@@ -6,16 +6,8 @@ import {
   privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { type User } from "@clerk/nextjs/dist/api";
 import { TRPCError } from "@trpc/server";
-
-const filterUserForClient = (user: User) => {
-  return {
-    id: user.id,
-    username: user.username,
-    profileImageUrl: user.profileImageUrl,
-  };
-};
+import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 
 import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis";
