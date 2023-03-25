@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Image from "next/image";
 import Head from "next/head";
+import { useState } from "react";
 import { SignInButton, useUser } from "@clerk/nextjs";
 
 import { api, type RouterOutputs } from "~/utils/api";
@@ -13,6 +14,18 @@ dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
   const { user } = useUser();
+
+  const [input, setInput] = useState("");
+
+  const ctx = api.useContext();
+
+  const { mutate: createPost, isLoading: isPosting } =
+    api.posts.create.useMutation({
+      onSuccess: () => {
+        setInput("");
+        void ctx.posts.getAll.invalidate();
+      },
+    });
 
   if (!user) return null;
 
@@ -28,7 +41,19 @@ const CreatePostWizard = () => {
       <input
         placeholder="Type some emojis!"
         className="grow bg-transparent outline-none"
+        type="emoji"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        disabled={isPosting}
       />
+      <button
+        className="rounded-md bg-blue-500 px-4 py-2 text-white"
+        onClick={() => {
+          createPost({ content: input });
+        }}
+      >
+        Post
+      </button>
     </div>
   );
 };
@@ -53,7 +78,7 @@ const PostView = (props: PostWithUser) => {
             {dayjs(post.createdAt).fromNow()}
           </span>
         </div>
-        <span>{post.content}</span>
+        <span className="text-xl">{post.content}</span>
       </div>
     </div>
   );
@@ -68,7 +93,7 @@ const Feed = () => {
 
   return (
     <div className="flex flex-col">
-      {[...data, ...data].map((fullPost) => (
+      {data.map((fullPost) => (
         <PostView key={fullPost.post.id} {...fullPost} />
       ))}
     </div>
