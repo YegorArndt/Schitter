@@ -1,11 +1,15 @@
 import { type NextPage } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { SignInButton, useUser } from "@clerk/nextjs";
 
-import { api, type RouterOutputs } from "~/utils/api";
-import { LoadingPage, LoadingSpinner, PageLayout } from "~/components";
+import { api } from "~/utils/api";
+import {
+  LoadingPage,
+  LoadingSpinner,
+  PageLayout,
+  PostView,
+} from "~/components";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -81,35 +85,6 @@ const CreatePostWizard = () => {
           <LoadingSpinner />
         </div>
       )}
-    </div>
-  );
-};
-
-type PostWithUser = RouterOutputs["posts"]["getAll"][number];
-const PostView = (props: PostWithUser) => {
-  const { post, author } = props;
-
-  return (
-    <div className="flex justify-start gap-3 border-b border-slate-400 p-8">
-      <Image
-        src={author.profileImageUrl}
-        alt={`@${author.username}'s profile picture`}
-        height={50}
-        width={50}
-        className="rounded-full"
-      />
-      <div className="flex flex-col">
-        <div className="flex items-center text-slate-300">
-          <Link href={`/@${author.username}`}>@{author.username}</Link>
-          <Link
-            href={`/post/${post.id}`}
-            className="font-thin before:mx-1 before:content-['·']"
-          >
-            {dayjs(post.createdAt).fromNow()}
-          </Link>
-        </div>
-        <span className="text-xl">{post.content}</span>
-      </div>
     </div>
   );
 };

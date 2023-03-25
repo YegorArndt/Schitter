@@ -3,7 +3,25 @@ import Head from "next/head";
 import Image from "next/image";
 
 import { api } from "~/utils/api";
-import { PageLayout } from "~/components";
+import { LoadingPage, PageLayout, PostView } from "~/components";
+
+const ProfileFeed = (props: { userId: string }) => {
+  const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
+    userId: props.userId,
+  });
+
+  if (isLoading) return <LoadingPage />;
+
+  if (!data || data.length === 0) return <div>404</div>;
+
+  return (
+    <div>
+      {data.map((fullPost) => (
+        <PostView key={fullPost.post.id} {...fullPost} />
+      ))}
+    </div>
+  );
+};
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({
@@ -30,7 +48,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="h-[64px]" />
         <div className="p-4 text-2xl font-bold">@{data.username}</div>
 
-        <div className="w-full border-b border-slate-400" />
+        <div className="w-full border-b border-slate-400">
+          <ProfileFeed userId={data.id} />
+        </div>
       </PageLayout>
     </>
   );
