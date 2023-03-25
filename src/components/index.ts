@@ -1,1 +1,1 @@
-export { LoadingPage } from "./LoadingPage";
+export { LoadingPage, LoadingSpinner } from "./LoadingPage";

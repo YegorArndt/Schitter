@@ -5,10 +5,11 @@ import { useState } from "react";
 import { SignInButton, useUser } from "@clerk/nextjs";
 
 import { api, type RouterOutputs } from "~/utils/api";
-import { LoadingPage } from "~/components";
+import { LoadingPage, LoadingSpinner } from "~/components";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { toast } from "react-hot-toast";
 
 dayjs.extend(relativeTime);
 
@@ -24,6 +25,16 @@ const CreatePostWizard = () => {
       onSuccess: () => {
         setInput("");
         void ctx.posts.getAll.invalidate();
+      },
+      onError: (error) => {
+        const errorMessage = error.data?.zodError?.fieldErrors.content;
+
+        if (errorMessage && errorMessage[0]) {
+          toast.error(errorMessage[0]);
+          return;
+        }
+
+        toast.error("Something went wrong");
       },
     });
 
@@ -44,16 +55,32 @@ const CreatePostWizard = () => {
         type="emoji"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (input === "" || isPosting) return;
+            createPost({ content: input });
+          }
+        }}
         disabled={isPosting}
       />
-      <button
-        className="rounded-md bg-blue-500 px-4 py-2 text-white"
-        onClick={() => {
-          createPost({ content: input });
-        }}
-      >
-        Post
-      </button>
+
+      {input !== "" && !isPosting && (
+        <button
+          className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => {
+            createPost({ content: input });
+          }}
+          disabled={isPosting}
+        >
+          Post
+        </button>
+      )}
+      {isPosting && (
+        <div className="w-[2rem]">
+          <LoadingSpinner />
+        </div>
+      )}
     </div>
   );
 };
