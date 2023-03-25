@@ -1,4 +1,5 @@
 import { type NextPage } from "next";
+import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
 import { useState } from "react";
@@ -100,10 +101,13 @@ const PostView = (props: PostWithUser) => {
       />
       <div className="flex flex-col">
         <div className="flex items-center text-slate-300">
-          <span>@{author.username}</span>
-          <span className="font-thin before:mx-1 before:content-['·']">
+          <Link href={`/@${author.username}`}>@{author.username}</Link>
+          <Link
+            href={`/post/${post.id}`}
+            className="font-thin before:mx-1 before:content-['·']"
+          >
             {dayjs(post.createdAt).fromNow()}
-          </span>
+          </Link>
         </div>
         <span className="text-xl">{post.content}</span>
       </div>
