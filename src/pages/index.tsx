@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Image from "next/image";
 import { useState } from "react";
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 
 import { api } from "~/utils/api";
 import {
@@ -19,6 +19,8 @@ dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
   const { user } = useUser();
+
+  console.log(user);
 
   const [input, setInput] = useState("");
 
@@ -118,6 +120,9 @@ const Home: NextPage = () => {
 
   return (
     <PageLayout>
+      <div className="flex justify-center p-4">
+        <SignOutButton />
+      </div>
       <div className="flex border-b border-slate-400 p-4 ">
         <div className="flex justify-center">
           {!isSignedIn && (
