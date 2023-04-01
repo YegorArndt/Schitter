@@ -1,41 +1,44 @@
 import { type NextPage } from "next";
 import Image from "next/image";
-import { useState } from "react";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
-import { api } from "~/utils/api";
+import { api } from "~/utils";
 import {
   LoadingPage,
   LoadingSpinner,
   PageLayout,
   PostView,
 } from "~/components";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { toast } from "react-hot-toast";
-
-dayjs.extend(relativeTime);
+import { Input } from "~/components/ui";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
-
-  console.log(user);
-
-  const [input, setInput] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset: resetUserInput,
+    watch,
+    getValues,
+  } = useForm({
+    defaultValues: {
+      userInput: "",
+    },
+  });
 
   const ctx = api.useContext();
 
   const { mutate: createPost, isLoading: isPosting } =
     api.posts.create.useMutation({
       onSuccess: () => {
-        setInput("");
+        resetUserInput();
         void ctx.posts.getAll.invalidate();
       },
       onError: (error) => {
         const errorMessage = error.data?.zodError?.fieldErrors.content;
 
-        if (errorMessage && errorMessage[0]) {
+        if (errorMessage?.[0]) {
           toast.error(errorMessage[0]);
           return;
         }
@@ -43,6 +46,12 @@ const CreatePostWizard = () => {
         toast.error("Something went wrong");
       },
     });
+
+  const shouldDisplayPostButton = !isPosting && watch("userInput");
+
+  /**
+   * Make TS happy
+   */
 
   if (!user) return null;
 
@@ -55,38 +64,37 @@ const CreatePostWizard = () => {
         height={56}
         className="rounded-full"
       />
-      <input
-        placeholder="Type some emojis!"
-        className="grow bg-transparent outline-none"
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (input === "" || isPosting) return;
-            createPost({ content: input });
-          }
-        }}
-        disabled={isPosting}
-      />
-
-      {input !== "" && !isPosting && (
-        <button
-          className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={() => {
-            createPost({ content: input });
-          }}
+      <form
+        onSubmit={
+          void handleSubmit(({ userInput }) =>
+            createPost({ content: userInput })
+          )
+        }
+        className="grow"
+      >
+        <Input
+          {...register("userInput", {})}
+          type="text"
+          placeholder="Feel free to schit!"
+          className="bg-transparent outline-none"
           disabled={isPosting}
-        >
-          Post
-        </button>
-      )}
-      {isPosting && (
-        <div className="w-[2rem]">
-          <LoadingSpinner />
-        </div>
-      )}
+        />
+
+        {shouldDisplayPostButton && (
+          <button
+            type="submit"
+            className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isPosting}
+          >
+            Post
+          </button>
+        )}
+        {isPosting && (
+          <div className="w-[2rem]">
+            <LoadingSpinner />
+          </div>
+        )}
+      </form>
     </div>
   );
 };
@@ -120,9 +128,11 @@ const Home: NextPage = () => {
 
   return (
     <PageLayout>
-      <div className="flex justify-center p-4">
-        <SignOutButton />
-      </div>
+      {isSignedIn && (
+        <div className="flex justify-center p-4">
+          <SignOutButton />
+        </div>
+      )}
       <div className="flex border-b border-slate-400 p-4 ">
         <div className="flex justify-center">
           {!isSignedIn && (

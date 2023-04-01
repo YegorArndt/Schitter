@@ -1,11 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { type RouterOutputs } from "~/utils/api";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
+import { fromNow, type RouterOutputs } from "~/utils";
 
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 export const PostView = (props: PostWithUser) => {
@@ -27,7 +23,7 @@ export const PostView = (props: PostWithUser) => {
             href={`/post/${post.id}`}
             className="font-thin before:mx-1 before:content-['·']"
           >
-            {dayjs(post.createdAt).fromNow()}
+            {fromNow(post.createdAt)}
           </Link>
         </div>
         <span className="text-xl">{post.content}</span>
