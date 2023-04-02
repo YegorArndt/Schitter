@@ -3,6 +3,8 @@ import Image from "next/image";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 import { api } from "~/utils";
 import {
@@ -11,7 +13,8 @@ import {
   PageLayout,
   PostView,
 } from "~/components";
-import { Input } from "~/components/ui";
+import { Button, Input } from "~/components/ui";
+import { Logo } from "~/components/icons";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -20,7 +23,6 @@ const CreatePostWizard = () => {
     handleSubmit,
     reset: resetUserInput,
     watch,
-    getValues,
   } = useForm({
     defaultValues: {
       userInput: "",
@@ -47,7 +49,7 @@ const CreatePostWizard = () => {
       },
     });
 
-  const shouldDisplayPostButton = !isPosting && watch("userInput");
+  const isButtonDisabled = Boolean(!isPosting && watch("userInput"));
 
   /**
    * Make TS happy
@@ -74,21 +76,18 @@ const CreatePostWizard = () => {
       >
         <Input
           {...register("userInput", {})}
-          type="text"
           placeholder="Feel free to schit!"
-          className="bg-transparent outline-none"
           disabled={isPosting}
         />
 
-        {shouldDisplayPostButton && (
-          <button
-            type="submit"
-            className="rounded-md bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={isPosting}
-          >
-            Post
-          </button>
-        )}
+        <Button type="submit" text="Post" disabled={isButtonDisabled} />
+
+        <Tooltip
+          id="post-button"
+          content="Your post must be at least 20 and at most 255 symbols long"
+          positionStrategy="absolute"
+          variant="light"
+        />
         {isPosting && (
           <div className="w-[2rem]">
             <LoadingSpinner />
@@ -107,7 +106,7 @@ const Feed = () => {
   if (!data) return <div>Something went wrong</div>;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       {data.map((fullPost) => (
         <PostView key={fullPost.post.id} {...fullPost} />
       ))}
@@ -124,23 +123,20 @@ const Home: NextPage = () => {
    */
   api.posts.getAll.useQuery();
 
-  if (!userLoaded) return <div />;
+  if (!userLoaded) return null;
 
   return (
     <PageLayout>
-      {isSignedIn && (
-        <div className="flex justify-center p-4">
-          <SignOutButton />
-        </div>
-      )}
-      <div className="flex border-b border-slate-400 p-4 ">
-        <div className="flex justify-center">
-          {!isSignedIn && (
-            <SignInButton>Sign in to leave a comment</SignInButton>
-          )}
-        </div>
-        {isSignedIn && <CreatePostWizard />}
-      </div>
+      <header className="flex items-center justify-between py-5">
+        <Logo className="h-[30px] w-[160px]" />
+        {isSignedIn ? (
+          <SignOutButton>sign out</SignOutButton>
+        ) : (
+          <SignInButton>sign in to give a schit</SignInButton>
+        )}
+      </header>
+
+      {isSignedIn && <CreatePostWizard />}
       <Feed />
     </PageLayout>
   );

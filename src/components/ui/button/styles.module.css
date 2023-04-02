@@ -1,0 +1,32 @@
+.btn-common {
+  @apply inline-flex cursor-pointer appearance-none items-center rounded-md no-underline outline-transparent transition duration-300 ease-in-out hover:brightness-75;
+}
+
+.btn-ghost {
+  @apply bg-transparent;
+  @apply btn-common;
+}
+
+.btn-contained-common {
+  @apply relative box-border select-none justify-center rounded-2xl px-4 py-1 outline-2 outline-offset-2;
+  @apply btn-common;
+}
+
+.btn-red {
+  @apply clr-white bg-red;
+  @apply btn-contained-common;
+}
+
+.btn-white {
+  @apply clr-gray bg-white;
+  @apply btn-contained-common;
+}
+
+/* todo  */
+.btn-sm {
+  min-height: 2.9rem;
+}
+
+.btn-md {
+  min-height: 2.75rem;
+}

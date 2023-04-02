@@ -3,6 +3,30 @@
 @tailwind utilities;
 
 body {
-  @apply bg-black text-slate-100;
+  @apply text-sm clr-white bg-black;
   overscroll-behavior: none;
+}
+
+@layer utilities {
+  .container {
+    max-width: 40rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .b {
+    border: 1px solid #bcbcbc;
+  }
+  .b-t {
+    border-top: 1px solid #bcbcbc;
+  }
+  .b-r {
+    border-right: 1px solid #bcbcbc;
+  }
+  .b-b {
+    border-bottom: 1px solid #bcbcbc;
+  }
+  .b-l {
+    border-left: 1px solid #bcbcbc;
+  }
 }
