@@ -6,6 +6,17 @@ import { api } from "~/utils";
 import { LoadingSpinner, Skeleton } from "~/components";
 import { Button } from "~/components/ui";
 
+const wizardConfigs = {
+  posts: {
+    placeholder: "give a schit...",
+    minSymbols: 20,
+  },
+  // comments: {
+  //   placeholder: 'well, comment away, smart-ass...',
+  //   minSymbols: 1
+  // }
+};
+
 type CreateWizardProps = {
   wizardType: "posts";
 };
@@ -45,6 +56,7 @@ export const CreateWizard = (props: CreateWizardProps) => {
   });
 
   const inputLength = watch("userInput").length;
+  const { minSymbols } = wizardConfigs[wizardType];
 
   if (!isUserLoaded) return <Skeleton itemCn="py-10" />;
 
@@ -60,26 +72,24 @@ export const CreateWizard = (props: CreateWizardProps) => {
     >
       <textarea
         {...register("userInput", { minLength: 20, maxLength: 255 })}
-        placeholder={
-          wizardType === "posts"
-            ? "give a schit..."
-            : "well, comment away, smart-ass..."
-        }
+        placeholder={wizardConfigs[wizardType].placeholder}
         disabled={isPosting}
         className="w-full overflow-y-hidden outline-none bg-transparent"
       />
 
       {Boolean(inputLength) && (
-        <footer className="flex-between">
-          <small className="clr-gray">{inputLength} / 255</small>
-          <Button type="submit" text="Post" red disabled={isPosting} />
+        <footer className="flex-between clr-gray">
+          <small>{inputLength} / 255</small>
+          {inputLength >= minSymbols ? (
+            isPosting ? (
+              <LoadingSpinner />
+            ) : (
+              <Button type="submit" text="Post" red disabled={isPosting} />
+            )
+          ) : (
+            <small>At least {minSymbols} symbols</small>
+          )}
         </footer>
-      )}
-
-      {isPosting && (
-        <div className="w-[2rem]">
-          <LoadingSpinner />
-        </div>
       )}
     </form>
   );

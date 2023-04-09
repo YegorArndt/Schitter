@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 
 import { api } from "~/utils";
-import { CreateWizard, Feed } from "~/components";
+import { CreateWizard, Feed, SchitCounter } from "~/components";
 
 const Home: NextPage = () => {
   /**
@@ -13,6 +13,11 @@ const Home: NextPage = () => {
   return (
     <div className="mt-3 flex flex-col gap-3">
       <CreateWizard wizardType="posts" />
+      <SchitCounter
+        count={data?.length}
+        isLoading={isLoading}
+        placeholder="schits given total:"
+      />
       <Feed data={data} isLoading={isLoading} />
     </div>
   );

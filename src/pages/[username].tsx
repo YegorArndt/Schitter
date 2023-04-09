@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { api } from "~/utils/api";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import { Feed } from "~/components";
+import { Feed, SchitCounter } from "~/components";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data: userProfileData } = api.profile.getUserByUsername.useQuery({
@@ -36,7 +36,14 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           @{userProfileData.username}
         </div>
       </div>
-      <Feed data={userPosts} isLoading={userPostsLoading} />
+      <div className="flex flex-col gap-3">
+        <SchitCounter
+          count={userPosts?.length}
+          isLoading={userPostsLoading}
+          placeholder="schits given by the fella😍😍😍:"
+        />
+        <Feed data={userPosts} isLoading={userPostsLoading} />
+      </div>
     </>
   );
 };
