@@ -8,7 +8,7 @@ export const PostView = (props: PostWithUser) => {
   const { post, author } = props;
 
   return (
-    <div className="relative flex justify-start gap-3 rounded-lg py-4 px-3 bg-dark-red">
+    <div className="flex justify-start gap-3 rounded-lg py-4 px-3 bg-dark-red">
       <Link to={`/@${author.username}`} className="z-1">
         <Image
           src={author.profileImageUrl}
@@ -29,12 +29,6 @@ export const PostView = (props: PostWithUser) => {
         </header>
         <span>{post.content}</span>
       </div>
-
-      {/* You can't have nested <a />'s */}
-      <Link
-        to={`/post/${post.id}`}
-        className="absolute top-0 left-0 h-full w-full"
-      />
     </div>
   );
 };

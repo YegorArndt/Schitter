@@ -20,9 +20,9 @@ const Navigation = () => {
   return (
     <nav className="flex-evenly b-t b-b">
       {[
-        { text: "profile", to: `/${user.username}` },
+        { text: "profile", to: `/@${user.username}` },
         { text: "feed", to: `/` },
-        { text: "activity", to: `/${user.username}/activity` },
+        { text: "activity", to: `/@${user.username}/activity` },
       ].map(({ text, to }) => (
         <Link
           key={text}

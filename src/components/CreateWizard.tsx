@@ -25,24 +25,24 @@ export const CreateWizard = (props: CreateWizardProps) => {
 
   const ctx = api.useContext();
 
-  const { mutate: create, isLoading: isPosting } = api.posts.create.useMutation(
-    {
-      onSuccess: () => {
-        resetUserInput();
-        void ctx.posts.getAll.invalidate();
-      },
-      onError: (error) => {
-        const errorMessage = error.data?.zodError?.fieldErrors.content;
+  const { mutate: create, isLoading: isPosting } = api[
+    wizardType
+  ].create.useMutation({
+    onSuccess: () => {
+      resetUserInput();
+      void ctx[wizardType].getAll.invalidate();
+    },
+    onError: (error) => {
+      const errorMessage = error.data?.zodError?.fieldErrors.content;
 
-        if (errorMessage?.[0]) {
-          toast.error(errorMessage[0]);
-          return;
-        }
+      if (errorMessage?.[0]) {
+        toast.error(errorMessage[0]);
+        return;
+      }
 
-        toast.error("Something went wrong");
-      },
-    }
-  );
+      toast.error("Something went wrong");
+    },
+  });
 
   const inputLength = watch("userInput").length;
 
