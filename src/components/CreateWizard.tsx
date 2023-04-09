@@ -13,7 +13,6 @@ type CreateWizardProps = {
 };
 export const CreateWizard = (props: CreateWizardProps) => {
   const { type } = props;
-
   const { user, isSignedIn } = useUser();
   const {
     register,
@@ -47,19 +46,18 @@ export const CreateWizard = (props: CreateWizardProps) => {
     }
   );
 
-  const isButtonDisabled = Boolean(!isPosting && watch("userInput"));
   const inputLength = watch("userInput").length;
 
   if (!user || !isSignedIn) return null;
 
   return (
     <form
-      onSubmit={
-        void handleSubmit(({ userInput }) => create({ content: userInput }))
-      }
-      className="b focus-within:b-active flex w-full flex-col gap-4 rounded-xl p-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void handleSubmit(({ userInput }) => create({ content: userInput }));
+      }}
+      className="b focus-within:b-active flex w-full flex-col gap-4 rounded-xl [&>*]:p-4"
     >
-      {/* // TOdo textarea component  */}
       <textarea
         {...register("userInput", {})}
         placeholder={
@@ -68,22 +66,30 @@ export const CreateWizard = (props: CreateWizardProps) => {
             : "well, comment away, smart-ass..."
         }
         disabled={isPosting}
-        className="w-full outline-none bg-transparent"
+        className="w-full overflow-y-hidden outline-none bg-transparent"
       />
 
       {Boolean(inputLength) && (
         <footer className="flex-between">
           <small className="clr-gray">{inputLength} / 255</small>
-          <Button type="submit" text="Post" red disabled={isButtonDisabled} />
+          <Button
+            type="submit"
+            text="Post"
+            red
+            disabled={isPosting}
+            data-tooltip-id="post-button"
+          />
         </footer>
       )}
 
-      <Tooltip
-        id="post-button"
-        content="Your post must be at least 20 and at most 255 symbols long"
-        positionStrategy="absolute"
-        variant="light"
-      />
+      {(inputLength < 20 || inputLength > 255) && (
+        <Tooltip
+          id="post-button"
+          content="Your post must be at least 20 and at most 255 symbols long"
+          positionStrategy="absolute"
+          variant="light"
+        />
+      )}
 
       {isPosting && (
         <div className="w-[2rem]">
