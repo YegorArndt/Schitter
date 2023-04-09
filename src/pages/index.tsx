@@ -1,12 +1,19 @@
 import { type NextPage } from "next";
 
 import { api } from "~/utils";
-import { CreateWizard, LoadingPage, PostView } from "~/components";
+import { CreateWizard, Skeleton, PostView } from "~/components";
 
 const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
 
-  if (postsLoading) return <LoadingPage />;
+  if (postsLoading)
+    return (
+      <Skeleton
+        containerCn="flex flex-col gap-2"
+        itemCn="w-full py-10"
+        length={10}
+      />
+    );
 
   if (!data) return <div>Something went wrong</div>;
 

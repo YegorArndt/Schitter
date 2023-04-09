@@ -5,7 +5,7 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
 import { api } from "~/utils";
-import { LoadingSpinner } from "~/components";
+import { LoadingSpinner, Skeleton } from "~/components";
 import { Button } from "~/components/ui";
 
 type CreateWizardProps = {
@@ -13,7 +13,7 @@ type CreateWizardProps = {
 };
 export const CreateWizard = (props: CreateWizardProps) => {
   const { type } = props;
-  const { user, isSignedIn } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const {
     register,
     handleSubmit,
@@ -48,7 +48,7 @@ export const CreateWizard = (props: CreateWizardProps) => {
 
   const inputLength = watch("userInput").length;
 
-  if (!user || !isSignedIn) return null;
+  if (!isLoaded) return <Skeleton itemCn="py-10" />;
 
   return (
     <form
@@ -62,7 +62,7 @@ export const CreateWizard = (props: CreateWizardProps) => {
         {...register("userInput", {})}
         placeholder={
           type === "posts"
-            ? "leave a schit..."
+            ? "give a schit..."
             : "well, comment away, smart-ass..."
         }
         disabled={isPosting}

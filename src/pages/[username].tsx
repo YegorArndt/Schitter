@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { api } from "~/utils/api";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import { LoadingPage, PageLayout, PostView } from "~/components";
+import { LoadingPage, PostView } from "~/components";
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
@@ -58,18 +58,18 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
 
-  const slug = context.params?.slug;
+  const username = context.params?.username;
 
-  if (typeof slug !== "string") throw new Error("Slug is not a string");
+  if (typeof username !== "string") throw new Error("Username is not a string");
 
-  const username = slug.replace("@", "");
+  const usernameWithAt = username.replace("@", "");
 
-  await ssg.profile.getUserByUsername.prefetch({ username });
+  await ssg.profile.getUserByUsername.prefetch({ username: usernameWithAt });
 
   return {
     props: {
       trpcState: ssg.dehydrate(),
-      username,
+      username: usernameWithAt,
     },
   };
 };
