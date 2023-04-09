@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply text-sm clr-white bg-black;
+  @apply overflow-y-scroll text-sm clr-white bg-black;
   overscroll-behavior: none;
 }
 

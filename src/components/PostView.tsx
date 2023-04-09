@@ -23,11 +23,11 @@ export const PostView = (props: PostWithUser) => {
           <Link
             text={`@${author.username}`}
             to={`/@${author.username}`}
-            className="z-1 clr-red"
+            className="z-1 text-base font-bold clr-red"
           />
           <span className="clr-gray">{fromNow(post.createdAt)}</span>
         </header>
-        <span className="text-xl">{post.content}</span>
+        <span>{post.content}</span>
       </div>
 
       {/* You can't have nested <a />'s */}

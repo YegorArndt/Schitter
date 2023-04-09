@@ -25,24 +25,24 @@ export const CreateWizard = (props: CreateWizardProps) => {
 
   const ctx = api.useContext();
 
-  const { mutate: create, isLoading: isPosting } = api[
-    wizardType
-  ].create.useMutation({
-    onSuccess: () => {
-      resetUserInput();
-      void ctx[wizardType].getAll.invalidate();
-    },
-    onError: (error) => {
-      const errorMessage = error.data?.zodError?.fieldErrors.content;
+  const { mutate: create, isLoading: isPosting } = api.posts.create.useMutation(
+    {
+      onSuccess: () => {
+        resetUserInput();
+        void ctx.posts.getAll.invalidate();
+      },
+      onError: (error) => {
+        const errorMessage = error.data?.zodError?.fieldErrors.content;
 
-      if (errorMessage?.[0]) {
-        toast.error(errorMessage[0]);
-        return;
-      }
+        if (errorMessage?.[0]) {
+          toast.error(errorMessage[0]);
+          return;
+        }
 
-      toast.error("Something went wrong");
-    },
-  });
+        toast.error("Something went wrong");
+      },
+    }
+  );
 
   const inputLength = watch("userInput").length;
 
@@ -54,12 +54,12 @@ export const CreateWizard = (props: CreateWizardProps) => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        void handleSubmit(({ userInput }) => create({ content: userInput }));
+        void handleSubmit(({ userInput }) => create({ content: userInput }))();
       }}
       className="b focus-within:b-active flex w-full flex-col gap-4 rounded-xl [&>*]:p-4"
     >
       <textarea
-        {...register("userInput")}
+        {...register("userInput", { minLength: 20, maxLength: 255 })}
         placeholder={
           wizardType === "posts"
             ? "give a schit..."
@@ -72,13 +72,7 @@ export const CreateWizard = (props: CreateWizardProps) => {
       {Boolean(inputLength) && (
         <footer className="flex-between">
           <small className="clr-gray">{inputLength} / 255</small>
-          <Button
-            type="submit"
-            text="Post"
-            red
-            disabled={isPosting}
-            data-tooltip-id="post-button"
-          />
+          <Button type="submit" text="Post" red disabled={isPosting} />
         </footer>
       )}
 
