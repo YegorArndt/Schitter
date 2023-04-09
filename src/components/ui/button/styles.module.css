@@ -1,5 +1,5 @@
 .btn-common {
-  @apply inline-flex cursor-pointer appearance-none items-center rounded-md no-underline outline-transparent transition duration-300 ease-in-out hover:brightness-75;
+  @apply inline-flex cursor-pointer appearance-none items-center rounded-md no-underline outline-transparent transition duration-300 ease-in-out hover:brightness-75 disabled:cursor-not-allowed;
 }
 
 .btn-ghost {
@@ -13,7 +13,7 @@
 }
 
 .btn-red {
-  @apply clr-white bg-red;
+  @apply !clr-white !bg-red;
   @apply btn-contained-common;
 }
 

@@ -36,23 +36,21 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       <Head>
         <title>{data.username}</title>
       </Head>
-      <PageLayout>
-        <div className="relative h-36 bg-slate-600">
-          <Image
-            src={data.profileImageUrl}
-            alt={`${data.username ?? ""}'s profile picture`}
-            height={128}
-            width={128}
-            className="absolute bottom-0 left-0 -mb-[64px] ml-4 rounded-full border-4 border-black bg-black"
-          />
-        </div>
-        <div className="h-[64px]" />
-        <div className="p-4 text-2xl font-bold">@{data.username}</div>
+      <div className="relative h-36 bg-slate-600">
+        <Image
+          src={data.profileImageUrl}
+          alt={`${data.username ?? ""}'s profile picture`}
+          height={128}
+          width={128}
+          className="absolute bottom-0 left-0 -mb-[64px] ml-4 rounded-full border-4 border-black bg-black"
+        />
+      </div>
+      <div className="h-[64px]" />
+      <div className="p-4 text-2xl font-bold">@{data.username}</div>
 
-        <div className="w-full border-b border-slate-400">
-          <ProfileFeed userId={data.id} />
-        </div>
-      </PageLayout>
+      <div className="w-full border-b border-slate-400">
+        <ProfileFeed userId={data.id} />
+      </div>
     </>
   );
 };

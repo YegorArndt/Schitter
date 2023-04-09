@@ -34,13 +34,32 @@ export type ButtonProps = { text?: string } & composeClassnamesProps &
   DefaultProps;
 
 export const Button = (props: ButtonProps) => {
-  const { className, baseCn, text, children = text, ...rest } = props;
+  const {
+    text,
+    children = text,
+    className,
+    baseCn,
+    sm,
+    md,
+    red,
+    white,
+    ghost,
+    ...rest
+  } = props;
 
   return (
     <button
       aria-label="button"
       type="button"
-      className={composeClassnames({ className, baseCn })}
+      className={composeClassnames({
+        className,
+        baseCn,
+        sm,
+        md,
+        red,
+        white,
+        ghost,
+      })}
       {...rest}
     >
       {children}

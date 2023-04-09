@@ -30,7 +30,7 @@ export const PostView = (props: PostWithUser) => {
         <span className="text-xl">{post.content}</span>
       </div>
 
-      {/* You can't have nested <a /> */}
+      {/* You can't have nested <a />'s */}
       <Link
         to={`/post/${post.id}`}
         className="absolute top-0 left-0 h-full w-full"
