@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "serve": "npm run build && npm run start",
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -27,7 +28,6 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
     "react-hot-toast": "^2.4.0",
-    "react-tooltip": "^5.10.4",
     "superjson": "1.9.1",
     "zod": "^3.20.6"
   },

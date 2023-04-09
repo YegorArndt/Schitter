@@ -4,9 +4,9 @@ import { api } from "~/utils";
 import { CreateWizard, Skeleton, PostView } from "~/components";
 
 const Feed = () => {
-  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+  const { data, isLoading } = api.posts.getAll.useQuery();
 
-  if (postsLoading)
+  if (isLoading)
     return (
       <Skeleton
         containerCn="flex flex-col gap-2"
@@ -35,7 +35,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="mt-3 flex flex-col gap-3">
-      <CreateWizard type="posts" />
+      <CreateWizard wizardType="posts" />
       <Feed />
     </div>
   );

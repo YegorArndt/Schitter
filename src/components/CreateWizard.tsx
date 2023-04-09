@@ -1,19 +1,17 @@
 import { useUser } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Tooltip } from "react-tooltip";
-import "react-tooltip/dist/react-tooltip.css";
 
 import { api } from "~/utils";
 import { LoadingSpinner, Skeleton } from "~/components";
 import { Button } from "~/components/ui";
 
 type CreateWizardProps = {
-  type: "posts";
+  wizardType: "posts";
 };
 export const CreateWizard = (props: CreateWizardProps) => {
-  const { type } = props;
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { wizardType } = props;
+  const { user, isLoaded: isUserLoaded } = useUser();
   const {
     register,
     handleSubmit,
@@ -27,28 +25,30 @@ export const CreateWizard = (props: CreateWizardProps) => {
 
   const ctx = api.useContext();
 
-  const { mutate: create, isLoading: isPosting } = api.posts.create.useMutation(
-    {
-      onSuccess: () => {
-        resetUserInput();
-        void ctx[type].getAll.invalidate();
-      },
-      onError: (error) => {
-        const errorMessage = error.data?.zodError?.fieldErrors.content;
+  const { mutate: create, isLoading: isPosting } = api[
+    wizardType
+  ].create.useMutation({
+    onSuccess: () => {
+      resetUserInput();
+      void ctx[wizardType].getAll.invalidate();
+    },
+    onError: (error) => {
+      const errorMessage = error.data?.zodError?.fieldErrors.content;
 
-        if (errorMessage?.[0]) {
-          toast.error(errorMessage[0]);
-          return;
-        }
+      if (errorMessage?.[0]) {
+        toast.error(errorMessage[0]);
+        return;
+      }
 
-        toast.error("Something went wrong");
-      },
-    }
-  );
+      toast.error("Something went wrong");
+    },
+  });
 
   const inputLength = watch("userInput").length;
 
-  if (!isLoaded) return <Skeleton itemCn="py-10" />;
+  if (!isUserLoaded) return <Skeleton itemCn="py-10" />;
+
+  if (!user) return null;
 
   return (
     <form
@@ -59,9 +59,9 @@ export const CreateWizard = (props: CreateWizardProps) => {
       className="b focus-within:b-active flex w-full flex-col gap-4 rounded-xl [&>*]:p-4"
     >
       <textarea
-        {...register("userInput", {})}
+        {...register("userInput")}
         placeholder={
-          type === "posts"
+          wizardType === "posts"
             ? "give a schit..."
             : "well, comment away, smart-ass..."
         }
@@ -80,15 +80,6 @@ export const CreateWizard = (props: CreateWizardProps) => {
             data-tooltip-id="post-button"
           />
         </footer>
-      )}
-
-      {(inputLength < 20 || inputLength > 255) && (
-        <Tooltip
-          id="post-button"
-          content="Your post must be at least 20 and at most 255 symbols long"
-          positionStrategy="absolute"
-          variant="light"
-        />
       )}
 
       {isPosting && (
