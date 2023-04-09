@@ -13,7 +13,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <Head>
         <title>Schitter</title>
         <meta name="description" content="Schit posting as easy as it gets" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
       <Toaster position="bottom-center" />
       <PageLayout>
