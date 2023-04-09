@@ -15,12 +15,14 @@ const Navigation = () => {
       <Skeleton containerCn="flex gap-3" itemCn="h-[40px] w-full" length={3} />
     );
 
+  if (!user?.username) return null;
+
   return (
     <nav className="flex-evenly b-t b-b">
       {[
-        // { text: "profile", to: `/${user.username}` },
+        { text: "profile", to: `/${user.username}` },
         { text: "feed", to: `/` },
-        // { text: "activity", to: `/${user.username}/activity` },
+        { text: "activity", to: `/${user.username}/activity` },
       ].map(({ text, to }) => (
         <Link
           key={text}
