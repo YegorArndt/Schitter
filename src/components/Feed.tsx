@@ -19,7 +19,7 @@ export const Feed = (props: FeedProps) => {
       />
     );
 
-  if (!data) return <div>Something went wrong</div>;
+  if (!data) return <div>Something went wrong. Probably the database is asleep</div>;
 
   return (
     <div className="flex flex-col gap-2">
